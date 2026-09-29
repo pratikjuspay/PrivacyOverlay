@@ -17,16 +17,47 @@ class SyncManager: ObservableObject {
     @Published var isSyncing: Bool = false
     
     private let projectId = "privacy-overlay-4cf1f"
+    private let apiKey = "AIzaSyCN8UGWWWcHLEE4KpnsFTAhqBo5ti2IPSM"
+    
     private var timer: Timer?
     private var lastLocalUpdate: TimeInterval = 0
     private var lastRemoteUpdate: TimeInterval = 0
+    private var authToken: String?
     
     func toggleSync() {
         if isSyncing {
             stopSync()
         } else {
-            startSync()
+            authenticateAndStartSync()
         }
+    }
+    
+    private func authenticateAndStartSync() {
+        if authToken != nil {
+            startSync()
+            return
+        }
+        
+        let url = URL(string: "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=\(apiKey)")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        let body: [String: Any] = ["returnSecureToken": true]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            guard let data = data,
+                  let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                  let token = json["idToken"] as? String else {
+                print("Failed to authenticate anonymously")
+                return
+            }
+            
+            DispatchQueue.main.async {
+                self?.authToken = token
+                self?.startSync()
+            }
+        }.resume()
     }
     
     private func startSync() {
@@ -52,7 +83,7 @@ class SyncManager: ObservableObject {
     }
     
     private func pushToFirebase(text: String) {
-        guard isSyncing, !roomCode.isEmpty else { return }
+        guard isSyncing, !roomCode.isEmpty, let token = authToken else { return }
         
         let currentTimestamp = Date().timeIntervalSince1970
         lastLocalUpdate = currentTimestamp
@@ -61,6 +92,7 @@ class SyncManager: ObservableObject {
         var request = URLRequest(url: url)
         request.httpMethod = "PATCH"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
         let body: [String: Any] = [
             "fields": [
@@ -75,11 +107,13 @@ class SyncManager: ObservableObject {
     }
     
     private func pollFirebase() {
-        guard isSyncing, !roomCode.isEmpty else { return }
+        guard isSyncing, !roomCode.isEmpty, let token = authToken else { return }
         
         let url = URL(string: "https://firestore.googleapis.com/v1/projects/\(projectId)/databases/(default)/documents/rooms/\(roomCode)")!
+        var request = URLRequest(url: url)
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
-        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
             guard let data = data, let self = self else { return }
             
             if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],

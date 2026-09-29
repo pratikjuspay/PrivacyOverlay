@@ -88,6 +88,7 @@
     <!-- Firebase SDKs (Modular) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
         import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
         // Configuration provided by user
@@ -101,6 +102,7 @@
         };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
 
         const roomInput = document.getElementById('roomCodeInput');
@@ -112,7 +114,7 @@
         let currentRoom = null;
         let isExternalUpdate = false;
 
-        connectBtn.addEventListener('click', () => {
+        connectBtn.addEventListener('click', async () => {
             const code = roomInput.value.trim();
             if (code.length !== 4) {
                 alert("Please enter a 4-digit room code.");
@@ -122,8 +124,18 @@
             if (unsubscribe) unsubscribe();
 
             currentRoom = code;
-            statusEl.textContent = "Connecting...";
+            statusEl.textContent = "Authenticating...";
             statusEl.className = "";
+
+            try {
+                await signInAnonymously(auth);
+            } catch (error) {
+                console.error("Auth Error:", error);
+                statusEl.textContent = "Auth Failed.";
+                return;
+            }
+
+            statusEl.textContent = "Connecting...";
 
             const roomRef = doc(db, "rooms", currentRoom);
             
