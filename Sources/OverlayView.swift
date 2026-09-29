@@ -17,14 +17,6 @@ struct OverlayView: View {
                     .foregroundColor(.primary)
                 Spacer()
                 
-                Button(action: { previewMarkdown.toggle() }) {
-                    Image(systemName: previewMarkdown ? "pencil" : "doc.text.image")
-                        .foregroundColor(.blue)
-                        .help(previewMarkdown ? "Edit Notes" : "Preview Markdown")
-                }
-                .buttonStyle(PlainButtonStyle())
-                .padding(.trailing, 8)
-                
                 Button(action: { manager.toggleVisibility() }) {
                     Image(systemName: "xmark")
                         .foregroundColor(.secondary)
@@ -35,24 +27,11 @@ struct OverlayView: View {
             .background(Color.black.opacity(0.1))
             
             // Notes Area
-            if previewMarkdown {
-                ScrollView {
-                    Text(SyntaxHighlighter.highlight(code: notes))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(10)
-                }
-                .background(Color(NSColor.windowBackgroundColor).opacity(0.8))
+            SyntaxTextView(text: $notes)
+                .padding(10)
+                .background(Color.black.opacity(0.15))
                 .cornerRadius(8)
                 .padding()
-            } else {
-                TextEditor(text: $notes)
-                    .font(.body)
-                    .scrollContentBackground(.hidden)
-                    .padding(10)
-                    .background(Color.black.opacity(0.15))
-                    .cornerRadius(8)
-                    .padding()
-            }
             
             Divider()
             
