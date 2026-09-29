@@ -14,6 +14,8 @@ struct SyntaxTextView: NSViewRepresentable {
         textView.backgroundColor = .clear
         textView.isRichText = false
         textView.allowsUndo = true
+        textView.font = .monospacedSystemFont(ofSize: 15, weight: .regular)
+        textView.textColor = NSColor.white
         textView.insertionPointColor = NSColor.white
         
         // Initial setup

@@ -6,8 +6,8 @@ struct SyntaxHighlighter {
         var attrStr = AttributedString(code)
         
         // Default text style (Base color for code)
-        attrStr.font = .system(size: 14, weight: .regular, design: .monospaced)
-        attrStr.foregroundColor = Color(NSColor.textColor)
+        attrStr.font = .system(size: 15, weight: .regular, design: .monospaced)
+        attrStr.foregroundColor = Color.white
         
         let stringNs = code as NSString
         let fullRange = NSRange(location: 0, length: stringNs.length)
