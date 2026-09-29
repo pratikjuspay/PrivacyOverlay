@@ -20,7 +20,7 @@ struct SyntaxTextView: NSViewRepresentable {
         
         // Initial setup
         let attrStr = SyntaxHighlighter.highlight(code: text)
-        textView.textStorage?.setAttributedString(NSAttributedString(attrStr))
+        textView.textStorage?.setAttributedString(attrStr)
         
         return scrollView
     }
@@ -33,7 +33,7 @@ struct SyntaxTextView: NSViewRepresentable {
             let selectedRange = textView.selectedRange()
             
             textView.textStorage?.beginEditing()
-            textView.textStorage?.setAttributedString(NSAttributedString(attrStr))
+            textView.textStorage?.setAttributedString(attrStr)
             textView.textStorage?.endEditing()
             
             // Restore cursor position if possible
@@ -71,7 +71,7 @@ struct SyntaxTextView: NSViewRepresentable {
             let selectedRange = textView.selectedRange()
             
             textView.textStorage?.beginEditing()
-            textView.textStorage?.setAttributedString(NSAttributedString(attrStr))
+            textView.textStorage?.setAttributedString(attrStr)
             textView.textStorage?.endEditing()
             
             textView.setSelectedRange(selectedRange)
