@@ -1,0 +1,11 @@
+name: PrivacyOverlay
+options:
+  bundleIdPrefix: com.example
+targets:
+  PrivacyOverlay:
+    type: application
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources: [Sources]
+    info:
+      path: Info.plist
