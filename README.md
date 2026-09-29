@@ -9,6 +9,14 @@ A native macOS utility built with Swift and SwiftUI that provides a privacy-focu
 - **Markdown Syntax Highlighting**: A custom-built, lightweight syntax highlighter that colorizes your code blocks (supports Rust, Swift, etc.) in a dark theme when you toggle "Preview Mode".
 - **Floating & Resizable**: Drag the window from anywhere on its background. Resize it from any edge. Always stays on top of other windows.
 - **Global Hotkey**: Press `Cmd + Shift + O` from anywhere in macOS to instantly show or hide your notes.
+- **Real-Time Collaboration**: Generate a 4-digit room code to sync keystrokes instantly via Firestore REST APIs.
+
+## Collaboration (Web Portal)
+
+Your colleague can join the session here: 
+👉 [https://pratikjuspay.github.io/PrivacyOverlay/](https://pratikjuspay.github.io/PrivacyOverlay/)
+
+*(Note: If the repository is set to private, you can simply send your colleague the `index.html` file to open in their browser).*
 
 ## How to Launch the App
 
