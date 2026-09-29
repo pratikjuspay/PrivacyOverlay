@@ -14,8 +14,8 @@ A native macOS utility built with Swift and SwiftUI that provides a privacy-focu
 
 You don't need Xcode to run this application!
 
-1. Open the folder containing the app.
-2. Double-click the **`PrivacyOverlay.app`** file.
+1. Open the main project folder (`PrivacyOverlay`).
+2. Double-click the **`PrivacyOverlay.app`** file located directly in the root of this folder.
 3. You will see a small **eye-with-a-slash icon** appear in your Mac's top-right menu bar.
 4. From that menu bar icon, you can:
    - Toggle the overlay visibility.
