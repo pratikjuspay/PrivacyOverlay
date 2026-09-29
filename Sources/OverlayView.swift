@@ -2,8 +2,7 @@ import SwiftUI
 
 struct OverlayView: View {
     @ObservedObject var manager: OverlayWindowManager
-    @AppStorage("notes") private var notes: String = "Your private notes...\n\n```rust\nlet mut name = String::from(\"Hello\")\n```"
-    @AppStorage("previewMarkdown") private var previewMarkdown: Bool = false
+    @ObservedObject var sync = SyncManager.shared
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -15,7 +14,24 @@ struct OverlayView: View {
                 Text("Privacy Overlay")
                     .font(.headline)
                     .foregroundColor(.primary)
-                Spacer()
+                if sync.isSyncing {
+                    Text("Room: \(sync.roomCode)")
+                        .font(.caption)
+                        .bold()
+                        .foregroundColor(.green)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Color.green.opacity(0.2))
+                        .cornerRadius(4)
+                }
+                
+                Button(action: { sync.toggleSync() }) {
+                    Image(systemName: sync.isSyncing ? "person.2.fill" : "person.2")
+                        .foregroundColor(sync.isSyncing ? .green : .secondary)
+                        .help(sync.isSyncing ? "Stop Syncing" : "Share via Web")
+                }
+                .buttonStyle(PlainButtonStyle())
+                .padding(.trailing, 8)
                 
                 Button(action: { manager.toggleVisibility() }) {
                     Image(systemName: "xmark")
@@ -27,7 +43,7 @@ struct OverlayView: View {
             .background(Color.black.opacity(0.1))
             
             // Notes Area
-            SyntaxTextView(text: $notes)
+            SyntaxTextView(text: $sync.notes)
                 .padding(10)
                 .background(Color.black.opacity(0.15))
                 .cornerRadius(8)
